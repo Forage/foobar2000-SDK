@@ -207,7 +207,7 @@ protected:
 		}
 	}
 	LONG AccGetItemRole( size_t index ) const override {
-		auto type = GetCellType( index, 0 );
+		auto type = this->GetCellType( index, 0 );
 		switch(type) {
 		case CListControlHeaderImpl::cell_checkbox:
 			return ROLE_SYSTEM_CHECKBUTTON;
@@ -222,7 +222,7 @@ protected:
 		}
 	}
 	bool AccIsItemChecked( size_t index ) const override {
-		auto type = GetCellType( index, 0 );
+		auto type = this->GetCellType( index, 0 );
 		switch(type) {
 		case CListControlHeaderImpl::cell_checkbox:
 		case CListControlHeaderImpl::cell_radiocheckbox:
