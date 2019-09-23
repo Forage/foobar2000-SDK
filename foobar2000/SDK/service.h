@@ -39,6 +39,7 @@ template<typename T> static void service_add_ref_safe(T * p_ptr) throw() {
 }
 
 class service_base;
+class service_factory_base;
 
 template<typename T>
 class service_ptr_base_t {
