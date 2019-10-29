@@ -5,6 +5,7 @@
 #pragma comment(lib, "oleacc.lib")
 
 #include "CListControl-Cell.h"
+#include "CListControlWithSelection.h"
 
 //! Internal class interfacing with Windows accessibility APIs. \n
 //! This class is not tied to any specific control and requires most of its methods to be overridden. \n
@@ -110,23 +111,46 @@ protected:
 	/* overrideme, optional
 	void AccGetName(pfc::string_base & out) const;
 	bool AccGetItemDefaultAction(pfc::string_base & out) const;
-	bool AccGetItemDescription(size_t index, pfc::string_base & out) const;
 	*/
-	
-	// Item name by default taken from column 0, override this if you supply another
-	void AccGetItemName(size_t index, pfc::string_base & out) const {
-		pfc::string_formatter ret, temp;
+
+	LONG AccRoleAt(size_t idx, size_t sub) const {
+		auto cell = this->GetCellType(idx, sub);
+		if (cell == nullptr) return 0;
+		return cell->AccRole();
+	}
+	bool useCellForDescription(size_t idx, size_t sub) const {
+		if (sub == 0) return false;
+		switch (AccRoleAt(idx, sub)) {
+		case ROLE_SYSTEM_TEXT:
+		case ROLE_SYSTEM_STATICTEXT:
+		case ROLE_SYSTEM_LISTITEM:
+			return true;
+		default:
+			return false;
+		}
+	}
+	bool AccGetItemDescription(size_t index, pfc::string_base& out) const {
+		pfc::string_formatter ret, temp, temp2;
 		const size_t total = this->GetColumnCount();
-		for( size_t walk = 0; walk < total; ) {
-			if ( this->GetSubItemText(index, walk, temp ) && temp.length() > 0 ) {
-				if ( ret.length() > 0 ) ret << ", ";
+		for (size_t walk = 0; walk < total; ) {
+			if (useCellForDescription(index, walk) && this->GetSubItemText(index, walk, temp) && temp.length() > 0) {
+				if (ret.length() > 0) ret << "; ";
+				this->GetColumnText(walk, temp2);
+				if (temp2.length() > 0) ret << temp2 << ": ";
 				ret << temp;
 			}
 			size_t d = this->GetSubItemSpan(index, walk);
-			if ( d < 1 ) d = 1;
+			if (d < 1) d = 1;
 			walk += d;
 		}
-		out = ret;
+		bool rv = (ret.length() > 0);
+		if (rv) out = ret;
+		return ret;
+	}
+
+	// Item name by default taken from column 0, override this if you supply another
+	void AccGetItemName(size_t index, pfc::string_base & out) const {
+		this->GetSubItemText(index, 0, out);
 	}
 
 	void AccSetSelection(pfc::bit_array const & affected, pfc::bit_array const & state) override {

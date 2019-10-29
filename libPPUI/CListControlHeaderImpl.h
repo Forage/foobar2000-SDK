@@ -54,6 +54,7 @@ public:
 	void DeleteColumns( pfc::bit_array const & mask, bool updateView = true);
 	void ResizeColumn(t_size index, t_uint32 widthPixels, bool updateView = true);
 	void SetColumn( size_t which, const char * title, DWORD fmtFlags = HDF_LEFT, bool updateView = true);
+	void GetColumnText(size_t which, pfc::string_base & out) const;
 
 	uint32_t GetOptimalColumnWidth( size_t index ) const;
 	uint32_t GetOptimalColumnWidthFixed( const char * fixedText) const;
