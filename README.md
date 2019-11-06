@@ -14,3 +14,5 @@ The following 3rd party projects have also been added.
 [wtl](https://sourceforge.net/projects/wtl/)
 
 [nlohmann/json](https://github.com/nlohmann/json)
+
+Licenses for each project can be found in their respective folders.
