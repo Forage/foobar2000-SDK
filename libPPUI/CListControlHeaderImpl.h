@@ -122,7 +122,7 @@ protected:
 	virtual bool AllowTypeFindInCell( size_t item, size_t subItem ) const;
 	virtual bool GetCellTypeSupported() const { return false; } // optimization hint, some expensive checks can be suppressed if cell types are not used for this view
 	virtual bool GetCellCheckState( size_t item, size_t subItem ) const { return false; }
-	virtual void SetCellCheckState( size_t item, size_t subItem, bool value ) {}
+	virtual void SetCellCheckState(size_t item, size_t subItem, bool value);
 	virtual bool ToggleSelectedItemsHook(const pfc::bit_array & mask);
 
 	void RenderSubItemTextInternal(size_t subItem, const CRect & subItemRect, CDCHandle dc, const char * text, bool allowColors);

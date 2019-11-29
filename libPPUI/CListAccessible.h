@@ -50,6 +50,7 @@ public:
 	void AccReloadItems(pfc::bit_array const & mask );
 	void AccRefreshItems(pfc::bit_array const & mask, UINT what);
 	void AccStateChange(pfc::bit_array const & mask);
+	void AccStateChange(size_t index);
 	void AccItemLayoutChanged();
 	void AccFocusItemChanged(size_t index);
 	void AccFocusOtherChanged(size_t index);
@@ -118,8 +119,7 @@ protected:
 		if (cell == nullptr) return 0;
 		return cell->AccRole();
 	}
-	bool useCellForDescription(size_t idx, size_t sub) const {
-		if (sub == 0) return false;
+	bool isCellText(size_t idx, size_t sub) const {
 		switch (AccRoleAt(idx, sub)) {
 		case ROLE_SYSTEM_TEXT:
 		case ROLE_SYSTEM_STATICTEXT:
@@ -128,6 +128,9 @@ protected:
 		default:
 			return false;
 		}
+	}
+	bool useCellForDescription(size_t idx, size_t sub) const {
+		return sub > 0 && isCellText(idx, sub);
 	}
 	bool AccGetItemDescription(size_t index, pfc::string_base& out) const {
 		pfc::string_formatter ret, temp, temp2;
@@ -146,6 +149,21 @@ protected:
 		bool rv = (ret.length() > 0);
 		if (rv) out = ret;
 		return ret;
+	}
+
+	void AccGetItemNameAlt(size_t index, pfc::string_base & out) const {
+		pfc::string_formatter ret, temp;
+		const size_t total = this->GetColumnCount();
+		for (size_t walk = 0; walk < total; ) {
+			if (this->isCellText(index, walk) && this->GetSubItemText(index, walk, temp) && temp.length() > 0) {
+				if (ret.length() > 0) ret << "; ";
+				ret << temp;
+			}
+			size_t d = this->GetSubItemSpan(index, walk);
+			if (d < 1) d = 1;
+			walk += d;
+		}
+		out = ret;
 	}
 
 	// Item name by default taken from column 0, override this if you supply another
@@ -238,6 +256,10 @@ protected:
 			return type->AccRole();
 		}
 		return ROLE_SYSTEM_LISTITEM;
+	}
+	void SetCellCheckState(size_t item, size_t subItem, bool value) override {
+		__super::SetCellCheckState(item, subItem, value);
+		this->AccStateChange(item);
 	}
 	bool AccIsItemChecked( size_t index ) const override {
 		auto type = this->GetCellType( index, 0 );

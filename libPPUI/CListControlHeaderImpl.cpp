@@ -917,6 +917,10 @@ void CListControlHeaderImpl::SetPressedItem(size_t row, size_t column) {
 	}
 }
 
+void CListControlHeaderImpl::SetCellCheckState(size_t item, size_t subItem, bool value) {
+	ReloadItem(item); (void)subItem; (void)value;
+	// Subclass deals with keeping track of state
+}
 
 bool CListControlHeaderImpl::ToggleSelectedItemsHook(const pfc::bit_array & mask) {
 	if (this->GetCellTypeSupported() ) {
