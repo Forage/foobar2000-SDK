@@ -269,7 +269,7 @@
     <ClInclude Include="service_by_guid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="service_factory.h">
+    <ClInclude Include="service_compat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="foobar2000-pfc.h">
