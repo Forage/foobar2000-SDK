@@ -15,6 +15,6 @@ jobs:
     displayName: Build
     inputs:
       solution: foobar2000/foo_sample/foo_sample.sln
-      platform: Win32
+      platform: x86
       configuration: $(configuration)
       msbuildArgs: /m
